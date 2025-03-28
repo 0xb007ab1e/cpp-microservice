@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package project.base;
+
+// Service state enumeration
+enum ServiceState {
+    CREATED = 0;
+    INITIALIZED = 1;
+    RUNNING = 2;
+    STOPPED = 3;
+    ERROR = 4;
+}
+
+// Health check message
+message HealthStatus {
+    bool healthy = 1;
+    string status = 2;
+}
+
+// Configuration messages
+message ConfigItem {
+    string key = 1;
+    string value = 2;
+}
+
+message ServiceConfig {
+    repeated ConfigItem items = 1;
+}
+
+// Metrics messages
+message MetricsData {
+    repeated ConfigItem metrics = 1;
+}
+
+// Status message
+message Status {
+    bool ok = 1;
+    string message = 2;
+}
+
+// Base service interface
+service BaseService {
+    // Lifecycle management
+    rpc Initialize(Empty) returns (Status);
+    rpc Start(Empty) returns (Status);
+    rpc Stop(Empty) returns (Status);
+    
+    // Health checking
+    rpc CheckHealth(Empty) returns (HealthStatus);
+    
+    // Configuration management
+    rpc SetConfig(ServiceConfig) returns (Status);
+    rpc GetConfig(Empty) returns (ServiceConfig);
+    
+    // Metrics
+    rpc GetMetrics(Empty) returns (MetricsData);
+}
+
+// Empty message for requests without parameters
+message Empty {}

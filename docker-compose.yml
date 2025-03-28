@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  base-service:
+    build: .
+    ports:
+      - "50051:50051"  # gRPC
+      - "9100:9100"    # Metrics
+    volumes:
+      - base-service-logs:/var/log/base-service
+    environment:
+      - SERVICE_ENV=production
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 256M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "50051"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+      start_period: 5s
+    networks:
+      - microservices-net
+
+volumes:
+  base-service-logs:
+    driver: local
+
+networks:
+  microservices-net:
+    driver: bridge

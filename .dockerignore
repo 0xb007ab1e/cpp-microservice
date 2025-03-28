@@ -1,0 +1,13 @@
+.git
+.gitignore
+build/
+**/build/
+.vscode/
+.idea/
+**/*.o
+**/*.a
+**/*.so
+**/*.dylib
+**/*.dll
+**/*.exe
+**/*.log
